@@ -1,0 +1,59 @@
+﻿@page "/fetchdata"
+
+<PageTitle>Weather forecast</PageTitle>
+
+@using BlazorTailwind.Data
+@inject WeatherForecastService ForecastService
+
+<div class="flex flex-grow">
+    <div class="w-1/2 m-16">
+        <h1>Weather forecast</h1>   
+        <p>This component demonstrates fetching data from a service.</p>
+
+        @if (forecasts == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {   
+            <div class="bg-white dark:bg-gray-600 p-4 rounded shadow-lg">
+                <table class="-full table-auto">
+                    <thead>
+                        <tr>
+                            <th class="p-3 border-b-4 border-purple-600 text-left uppercase text-sm tracking-wider">Date</th>
+                            <th class="p-3 border-b-4 border-purple-600 text-left uppercase text-sm tracking-wider">Temp. (C)</th>
+                            <th class="p-3 border-b-4 border-purple-600 text-left uppercase text-sm tracking-wider">Temp. (F)</th>
+                            <th class="p-3 border-b-4 border-purple-600 text-left uppercase text-sm tracking-wider">Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var forecast in forecasts)
+                        {
+                            <tr class="hover:bg-purple-200 odd:bg-purple-100 dark:hover:bg-purple-400 dark:odd:bg-purple-500">
+                                <td class="p-3">@forecast.Date.ToShortDateString()</td>
+                                <td class="p-3">@forecast.TemperatureC</td>
+                                <td class="p-3">@forecast.TemperatureF</td>
+                                <td class="p-3">@forecast.Summary</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>    
+    <div class="w-1/2 m-16">
+        <SlideIn>
+            <Tailwind />
+        </SlideIn>
+    </div>
+</div>
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+    }
+}
+
